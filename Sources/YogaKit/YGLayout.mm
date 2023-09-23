@@ -453,16 +453,6 @@ static void YGRemoveAllChildren(const YGNodeRef node) {
   YGNodeRemoveAllChildren(node);
 }
 
-static CGFloat YGRoundPixelValue(CGFloat value) {
-  static CGFloat scale;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^() {
-    scale = [UIScreen mainScreen].scale;
-  });
-
-  return roundf(value * scale) / scale;
-}
-
 static void YGApplyLayoutToViewHierarchy(UIView* view, BOOL preserveOrigin) {
   NSCAssert(
       [NSThread isMainThread],
@@ -489,15 +479,13 @@ static void YGApplyLayoutToViewHierarchy(UIView* view, BOOL preserveOrigin) {
   view.frame = (CGRect){
       .origin =
           {
-              .x = YGRoundPixelValue(topLeft.x + origin.x),
-              .y = YGRoundPixelValue(topLeft.y + origin.y),
+              .x = topLeft.x + origin.x,
+              .y = topLeft.y + origin.y,
           },
       .size =
           {
-              .width = YGRoundPixelValue(bottomRight.x) -
-                  YGRoundPixelValue(topLeft.x),
-              .height = YGRoundPixelValue(bottomRight.y) -
-                  YGRoundPixelValue(topLeft.y),
+              .width = MAX(0, bottomRight.x - topLeft.x),
+              .height = MAX(0, bottomRight.y - topLeft.y),
           },
   };
 
