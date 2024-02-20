@@ -19,13 +19,19 @@ let package = Package(
       name: "FlexLayoutYoga",
       dependencies: [],
       path: "Sources/yoga",
-      publicHeadersPath: "include/yoga"
+      publicHeadersPath: "include/yoga",
+      cxxSettings: [
+        .headerSearchPath("."),
+      ]
     ),
     .target(
       name: "FlexLayoutYogaKit",
       dependencies: ["FlexLayoutYoga"],
       path: "Sources/YogaKit",
-      publicHeadersPath: "include/YogaKit"
+      publicHeadersPath: "include/YogaKit",
+      cxxSettings: [
+        .headerSearchPath("."),
+      ]
     ),
     .testTarget(
       name: "FlexLayoutTests",
