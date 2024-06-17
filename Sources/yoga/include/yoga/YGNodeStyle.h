@@ -9,8 +9,8 @@
 
 #include <stddef.h>
 
-#include "YGNode.h"
-#include "YGValue.h"
+#include <YGNode.h>
+#include <YGValue.h>
 
 YG_EXTERN_C_BEGIN
 

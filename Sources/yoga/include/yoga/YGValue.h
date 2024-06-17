@@ -9,8 +9,8 @@
 
 #include <stdbool.h>
 
-#include "YGEnums.h"
-#include "YGMacros.h"
+#include <YGEnums.h>
+#include <YGMacros.h>
 
 /**
  * Float value to represent "undefined" in style values.

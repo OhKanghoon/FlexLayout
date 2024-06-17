@@ -9,9 +9,9 @@
 
 #include <stdbool.h>
 
-#include "YGConfig.h"
-#include "YGEnums.h"
-#include "YGMacros.h"
+#include <YGConfig.h>
+#include <YGEnums.h>
+#include <YGMacros.h>
 
 YG_EXTERN_C_BEGIN
 

@@ -6,7 +6,7 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "YGLayout.h"
+#import <YGLayout.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
