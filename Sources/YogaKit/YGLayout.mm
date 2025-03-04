@@ -156,6 +156,19 @@ YGValue YGPercentValue(CGFloat value) {
   return (YGValue){.value = (float) value, .unit = YGUnitPercent};
 }
 
+CGFloat ScreenScale()
+{
+  static CGFloat __scale = 0.0;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(1, 1), YES, 0);
+    __scale = CGContextGetCTM(UIGraphicsGetCurrentContext()).a;
+    UIGraphicsEndImageContext();
+  });
+  return __scale;
+}
+
+
 static YGConfigRef globalConfig;
 
 @interface YGLayout ()
@@ -176,7 +189,7 @@ static YGConfigRef globalConfig;
   YGConfigSetExperimentalFeatureEnabled(
       globalConfig, YGExperimentalFeatureWebFlexBasis, true);
   YGConfigSetErrata(globalConfig, YGErrataClassic);
-  YGConfigSetPointScaleFactor(globalConfig, [UIScreen mainScreen].scale);
+  YGConfigSetPointScaleFactor(globalConfig, ScreenScale());
 }
 
 - (instancetype)initWithView:(UIView*)view {
@@ -523,6 +536,16 @@ static CGFloat YGRoundPixelValue(CGFloat value) {
   return roundf(value * scale) / scale;
 }
 
+static CGFloat YGFloatReplacingNanWithZero(CGFloat const value) {
+  CGFloat result = value;
+
+  if (isnan(result)) {
+    result = 0;
+  }
+
+  return result;
+}
+
 static CGPoint YGPointReplacingNanWithZero(CGPoint const value) {
   CGPoint result = value;
 
@@ -552,10 +575,8 @@ static void YGApplyLayoutToViewHierarchy(UIView* view, BOOL preserveOrigin) {
       YGNodeLayoutGetTop(node),
   });
 
-  const CGPoint bottomRight = YGPointReplacingNanWithZero({
-      topLeft.x + YGNodeLayoutGetWidth(node),
-      topLeft.y + YGNodeLayoutGetHeight(node),
-  });
+  const CGFloat width = YGFloatReplacingNanWithZero(YGNodeLayoutGetWidth(node));
+  const CGFloat height = YGFloatReplacingNanWithZero(YGNodeLayoutGetHeight(node));
 
   const CGPoint origin = preserveOrigin ? view.frame.origin : CGPointZero;
   view.frame = (CGRect){
@@ -566,8 +587,8 @@ static void YGApplyLayoutToViewHierarchy(UIView* view, BOOL preserveOrigin) {
           },
       .size =
           {
-              .width = MAX(0, YGRoundPixelValue(bottomRight.x - topLeft.x)),
-              .height = MAX(0, YGRoundPixelValue(bottomRight.y - topLeft.y)),
+              .width = MAX(0, YGRoundPixelValue(width)),
+              .height = MAX(0, YGRoundPixelValue(height)),
           },
   };
 
