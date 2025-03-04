@@ -552,11 +552,6 @@ static void YGApplyLayoutToViewHierarchy(UIView* view, BOOL preserveOrigin) {
       YGNodeLayoutGetTop(node),
   });
 
-  const CGPoint bottomRight = YGPointReplacingNanWithZero({
-      topLeft.x + YGNodeLayoutGetWidth(node),
-      topLeft.y + YGNodeLayoutGetHeight(node),
-  });
-
   const CGPoint origin = preserveOrigin ? view.frame.origin : CGPointZero;
   view.frame = (CGRect){
       .origin =
@@ -566,8 +561,8 @@ static void YGApplyLayoutToViewHierarchy(UIView* view, BOOL preserveOrigin) {
           },
       .size =
           {
-              .width = MAX(0, YGRoundPixelValue(bottomRight.x - topLeft.x)),
-              .height = MAX(0, YGRoundPixelValue(bottomRight.y - topLeft.y)),
+              .width = MAX(0, YGRoundPixelValue(YGNodeLayoutGetWidth(node))),
+              .height = MAX(0, YGRoundPixelValue(YGNodeLayoutGetHeight(node))),
           },
   };
 
